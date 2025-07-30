@@ -3,19 +3,27 @@ class driver;
         mailbox #(transaction) mdr; //mailbox to reference
         virtual alu_if vif;
         transaction pkt;
-        function new(mailbox #(transaction) mgd, mailbox #(transaction) mdr, virtual alu_if vif);
-                this.mgd = mgd;
-                this.mdr = mdr;
-                this.vif = vif;
-        endfunction
         covergroup cg; //input functional coverage
-                c1 : coverpoint pkt.opa;
-                c2 : coverpoint pkt.opb;
+                c1 : coverpoint pkt.opa {
+                        bins b1 = {[0:255]};
+                }
+                c2 : coverpoint pkt.opb{
+                        bins b1 = {[0:255]};
+                }
                 c3 : coverpoint pkt.cin;
                 c4 : coverpoint pkt.mode;
                 c5 : coverpoint pkt.inp_valid;
                 c6 : coverpoint pkt.cmd;
+                cross c6, c4;
+                cross c5, c4;
+                cross c6, c5;
         endgroup
+        function new(mailbox #(transaction) mgd, mailbox #(transaction) mdr, virtual alu_if vif);
+                this.mgd = mgd;
+                this.mdr = mdr;
+                this.vif = vif;
+                cg = new();
+        endfunction
         task start();
                 int single_op_arithmetic[] = {4,5,6,7};
                 int single_op_logical[] = {6,7,8,9,10,11};
@@ -29,45 +37,57 @@ class driver;
                 pkt.cmd.rand_mode(1);
                   // $display("STRTED THE PKT iv is %0d",pkt.inp_valid);
                 if(pkt.inp_valid == 2'b11 || pkt.inp_valid == 2'b00)begin
+
+                        $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+
                         vif.opa <= pkt.opa;
                         vif.opb <= pkt.opb;
                         vif.cin <= pkt.cin;
                         vif.mode <= pkt.mode;
                         vif.inp_valid <= pkt.inp_valid;
                         vif.cmd <= pkt.cmd;
+                        this.cg.sample();
                         if(pkt.inp_valid == 2'b11 && (pkt.cmd == 4'b1010 || pkt.cmd == 4'b1001))
                                 repeat(2)@(vif.drv_cb);
                         else
                                 repeat(1)@(vif.drv_cb);
                         mdr.put(pkt);
-                        $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+//                      $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
                 end
                 else begin
                         if(pkt.inp_valid == 2'b01 || pkt.inp_valid == 2'b10)begin
                                 if(pkt.mode == 0)begin
                                         if(pkt.cmd inside {single_op_logical})begin
+
+                        $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+
                                                 vif.opa <= pkt.opa;
                                                 vif.opb <= pkt.opb;
                                                 vif.cin <= pkt.cin;
                                                 vif.mode <= pkt.mode;
                                                 vif.inp_valid <= pkt.inp_valid;
                                                 vif.cmd <= pkt.cmd;
+                                                this.cg.sample();
 
                                                 repeat(1)@(vif.drv_cb);
                                                 mdr.put(pkt);
-                                                $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+//                                              $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
 
                                         end
                                         else begin
+
+                        $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+
                                                 vif.opa <= pkt.opa;
                                                 vif.opb <= pkt.opb;
                                                 vif.cin <= pkt.cin;
                                                 vif.mode <= pkt.mode;
                                                 vif.inp_valid <= pkt.inp_valid;
                                                 vif.cmd <= pkt.cmd;
-                                                repeat(1)@(vif.drv_cb);
+                                                this.cg.sample();
+                                        //      repeat(1)@(vif.drv_cb);
                                                 mdr.put(pkt);
-                                                $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+//                                              $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
 
                                                 pkt.mode.rand_mode(0);
                                                 pkt.cmd.rand_mode(0);
@@ -82,6 +102,7 @@ class driver;
                                                         vif.mode <= pkt.mode;
                                                         vif.inp_valid <= pkt.inp_valid;
                                                         vif.cmd <= pkt.cmd;
+                                                        this.cg.sample();
                                                         if(pkt.inp_valid == 2'b11)begin
                                                         //      mdr.put(pkt);
                                                                // @(vif.drv_cb);
@@ -92,6 +113,8 @@ class driver;
                                 end
                                 else begin //arithmetic
                                         if(pkt.cmd inside {single_op_arithmetic})begin
+                                                 $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+
                                                 vif.opa <= pkt.opa;
                                                 vif.opb <= pkt.opb;
                                                 vif.cin <= pkt.cin;
@@ -99,20 +122,24 @@ class driver;
                                                 vif.inp_valid <= pkt.inp_valid;
                                                 vif.cmd <= pkt.cmd;
                                                 repeat(1)@(vif.drv_cb);
+                                                this.cg.sample();
                                                 mdr.put(pkt);
-                                                $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+//                                              $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
                                         end
                                         else begin
+                                                $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+
                                                 vif.opa <= pkt.opa;
                                                 vif.opb <= pkt.opb;
                                                 vif.cin <= pkt.cin;
                                                 vif.mode <= pkt.mode;
                                                 vif.inp_valid <= pkt.inp_valid;
                                                 vif.cmd <= pkt.cmd;
+                                                this.cg.sample();
                                                 //$display("FROM THE DRIVER INP IS %0D",pkt.inp_valid);
-                                                repeat(1)@(vif.drv_cb);
+                                           repeat(1)@(vif.drv_cb);
                                                 mdr.put(pkt);
-                                                $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
+//                                              $display("[%0t]---Sent from Driver--- inp_valid = %0d, opa = %0d, opb = %0d", $time, pkt.inp_valid, pkt.opa, pkt.opb);
                                                 pkt.mode.rand_mode(0);
                                                 pkt.cmd.rand_mode(0);
                                                 for(int i = 0; i < 16; i = i+1)begin
@@ -127,6 +154,7 @@ class driver;
                                                         vif.mode <= pkt.mode;
                                                         vif.inp_valid <= pkt.inp_valid;
                                                         vif.cmd <= pkt.cmd;
+                                                        this.cg.sample();
                                                         if(pkt.inp_valid == 2'b11)begin
                                                                 //if(i == 0)
                                                                 //      @(vif.drv_cb);
@@ -147,9 +175,9 @@ class driver;
                                 end
                         end
                 end
-                        if(pkt.cmd == 4'b1010 || pkt.cmd == 4'b1001)
+                        if((pkt.cmd == 4'b1010 || pkt.cmd == 4'b1001) && pkt.mode == 1)
                                 @(vif.drv_cb);
-                        @(vif.drv_cb);
+                        repeat(1)@(vif.drv_cb);
                 end
         endtask
 endclass
