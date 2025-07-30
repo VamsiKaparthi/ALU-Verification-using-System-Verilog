@@ -2,9 +2,9 @@
 
 ## Introduction
 This project implements a SystemVerilog-based verification environment for an Arithmetic Logic Unit (ALU). The goal is to ensure the ALU operates correctly under all specified conditions by:
-- Generating constrained-random test stimuli
-- Checking outputs against a reference model
-- Measuring functional and code coverage
+- Generating constrained-random test stimuli.
+- Checking outputs against a reference model.
+- Measuring functional and code coverage.
 
 ## Key Features
 ✔ Modular Testbench Architecture (Generator, Driver, Monitor, Scoreboard, Reference Model) <br/>
