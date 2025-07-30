@@ -14,5 +14,5 @@ This project implements a SystemVerilog-based verification environment for an Ar
 ✔ Automated Result Comparison (Scoreboard vs. Golden Reference) <br/>
 
 Connect
-📧 Email: vamsikrishnakaparthi@gmail.com
-🔗 LinkedIn: [My Profile](https://www.linkedin.com/in/vamsi-kaparthi-371730222?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+📧 Email: vamsikrishnakaparthi@gmail.com <br/>
+🔗 LinkedIn: [My Profile](https://www.linkedin.com/in/vamsi-kaparthi-371730222?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app) <br/>
