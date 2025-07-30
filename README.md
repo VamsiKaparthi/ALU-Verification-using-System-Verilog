@@ -7,11 +7,11 @@ This project implements a SystemVerilog-based verification environment for an Ar
 - Measuring functional and code coverage
 
 ## Key Features
-✔ Modular Testbench Architecture (Generator, Driver, Monitor, Scoreboard, Reference Model)
-✔ Transaction-based verification (Mailbox communication between components)
-✔ Functional Coverage (Tracking opcodes, operands, flags, and corner cases)
-✔ Protocol Checking (Handling invalid inputs, multi-cycle operations)
-✔ Automated Result Comparison (Scoreboard vs. Golden Reference)
+✔ Modular Testbench Architecture (Generator, Driver, Monitor, Scoreboard, Reference Model) <br/>
+✔ Transaction-based verification (Mailbox communication between components) <br/>
+✔ Functional Coverage (Tracking opcodes, operands, flags, and corner cases) <br/>
+✔ Protocol Checking (Handling invalid inputs, multi-cycle operations) <br/>
+✔ Automated Result Comparison (Scoreboard vs. Golden Reference) <br/>
 
 Connect
 📧 Email: vamsikrishnakaparthi@gmail.com
