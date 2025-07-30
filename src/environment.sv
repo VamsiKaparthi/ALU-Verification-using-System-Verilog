@@ -11,6 +11,7 @@ class environment;
         driver drv;
         reference rf;
         monitor mon;
+        scoreboard score;
         function new(virtual alu_if inf);
                 this.inf = inf;
         endfunction
@@ -27,6 +28,7 @@ class environment;
                         drv = new(mgd, mdr, inf);
                         rf = new(mdr, mrs, inf);
                         mon = new(mms, inf);
+                        score = new(mrs, mms);
                 end
         endtask
 
@@ -37,6 +39,7 @@ class environment;
                         rf.start();
                         mon.start();
                 join
+                score.start();
         endtask
 
 endclass
